@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="180" viewBox="0 0 720 180" role="img" aria-labelledby="title description">
-  <title id="title">exirc-exercises logo placeholder</title>
-  <desc id="description">Remo the chameleon beside an IRC speech bubble. Placeholder artwork to be refined.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="180" viewBox="0 0 560 180" role="img" aria-labelledby="title description">
+  <title id="title">Remo and the IRC speech bubble</title>
+  <desc id="description">Remo the chameleon beside a compact, glossy blue IRC speech bubble.</desc>
   <defs>
     <linearGradient id="remo-skin" x1="40" y1="0" x2="170" y2="0" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#ef4444"/>
@@ -9,19 +9,55 @@
       <stop offset="0.65" stop-color="#22c55e"/>
       <stop offset="1" stop-color="#22c55e"/>
     </linearGradient>
+    <linearGradient id="glass" x1="0" y1="52" x2="0" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c9f7ff"/>
+      <stop offset="0.18" stop-color="#5bd9ff"/>
+      <stop offset="0.55" stop-color="#25a9ed"/>
+      <stop offset="1" stop-color="#1472c4"/>
+    </linearGradient>
+    <linearGradient id="glass-edge" x1="0" y1="52" x2="0" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f2feff"/>
+      <stop offset="0.45" stop-color="#7de6ff"/>
+      <stop offset="1" stop-color="#72bfff"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="57" x2="0" y2="91" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.08"/>
+    </linearGradient>
+    <filter id="bubble-shadow" x="-20%" y="-25%" width="150%" height="170%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dy="5"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.45"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <rect width="720" height="180" rx="24" fill="#0b1220"/>
-  <g transform="translate(12 0) scale(1.05)">
-    <path d="M58 96C30 98 18 116 24 132c6 16 30 16 34 2 3-10-8-16-14-10-4 5 1 10 5 7" fill="none" stroke="url(#remo-skin)" stroke-width="11" stroke-linecap="round"/>
-    <path d="m80 100-8 18m-8 2 8-2 8 6m60-24 8 18m-8 6 8-6 8 2" fill="none" stroke="url(#remo-skin)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M52 92c2-30 38-46 74-42 16 2 24-20 44-18l28 46c-6 14-26 20-48 20-24 10-68 12-98-6Z" fill="url(#remo-skin)"/>
-    <path d="M64 96c28 8 60 6 82-2" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
-    <path d="M174 88c10 0 18-4 22-9" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+  <rect width="560" height="180" rx="24" fill="#0b1220"/>
+  <g transform="translate(8 26)">
+    <path fill="none" stroke="url(#remo-skin)" stroke-width="11" stroke-linecap="round" d="M 58 96 C 30 98 18 116 24 132 C 30 148 54 148 58 134 C 61 124 50 118 44 124 C 40 129 45 134 49 131"/>
+    <g fill="none" stroke="url(#remo-skin)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 80 100 L 72 118"/>
+      <path d="M 64 120 L 72 118 L 80 124"/>
+      <path d="M 140 100 L 148 118"/>
+      <path d="M 140 124 L 148 118 L 156 120"/>
+    </g>
+    <path fill="url(#remo-skin)" d="M 52 92 C 54 62 90 46 126 50 C 142 52 150 30 170 32 L 198 78 C 192 92 172 98 150 98 C 126 108 82 110 52 92 Z"/>
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="4" stroke-linecap="round" d="M 64 96 C 92 104 124 102 146 94"/>
+    <path fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" d="M 174 88 C 184 88 192 84 196 79"/>
     <circle cx="166" cy="62" r="15" fill="#16a34a"/>
-    <circle cx="167" cy="62" r="10" fill="#fff"/>
+    <circle cx="167" cy="62" r="10" fill="#ffffff"/>
     <circle cx="170" cy="62" r="4.5" fill="#0f172a"/>
   </g>
-  <path d="M250 42h400a18 18 0 0 1 18 18v54a18 18 0 0 1-18 18H438l-28 25v-25H250a18 18 0 0 1-18-18V60a18 18 0 0 1 18-18Z" fill="#111c2e" stroke="#38bdf8" stroke-width="4"/>
-  <text x="450" y="104" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="52" font-weight="700" text-anchor="middle">IRC</text>
-  <text x="465" y="158" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" letter-spacing="2" text-anchor="middle">PLACEHOLDER LOGO</text>
+  <g filter="url(#bubble-shadow)">
+    <path d="M270 53h174a17 17 0 0 1 17 17v39a17 17 0 0 1-17 17h-81l-22 18v-18h-71a17 17 0 0 1-17-17V70a17 17 0 0 1 17-17Z" fill="url(#glass)" stroke="url(#glass-edge)" stroke-width="3"/>
+    <path d="M272 58h169a11 11 0 0 1 11 11v9H261v-8a12 12 0 0 1 11-12Z" fill="url(#shine)"/>
+    <path d="M268 112c34 8 119 8 169 0" fill="none" stroke="#d9f8ff" stroke-opacity="0.55" stroke-width="2" stroke-linecap="round"/>
+    <path d="M277 67c28-5 58-5 82-2" fill="none" stroke="#ffffff" stroke-opacity="0.78" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="432" cy="68" r="3" fill="#ffffff" fill-opacity="0.85"/>
+  </g>
+  <text x="352" y="101" fill="#ffffff" stroke="#1267a8" stroke-width="1.5" paint-order="stroke" font-family="ui-rounded, system-ui, sans-serif" font-size="39" font-weight="800" letter-spacing="1" text-anchor="middle">IRC</text>
 </svg>

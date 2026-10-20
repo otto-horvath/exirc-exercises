@@ -75,9 +75,9 @@ only with events that actually occurred:
 | **Built it:** what was first built | **Broke it:** what went wrong | **Fixed it:** how it was improved |
 ```
 
-The README project-logo SVG is currently a placeholder: Remo beside a speech
-bubble containing “IRC.” It can be refined later without changing Remo’s
-test-status conventions.
+The README project-logo SVG pairs Remo with a compact, glossy speech bubble
+containing “IRC.” It can be refined later without changing Remo’s test-status
+conventions.
 
 ## Session notes
 

@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" alt="exirc-exercises: Remo the chameleon beside an IRC speech bubble (placeholder logo)" width="720">
+  <img src="docs/assets/logo.svg" alt="exirc-exercises: Remo the chameleon beside a glossy IRC speech bubble" width="720">
 </p>
 
 # Elixir IRC Client Exercises
+
+[![Built with Elixir](https://img.shields.io/badge/Built%20with-Elixir-8847B9)](https://elixir-lang.org/)
 
 A test-first learning series for building an IRC client in Elixir. The client
 starts as a terminal application and grows into a Phoenix LiveView interface,
@@ -100,7 +102,7 @@ configuration and an account the learner controls.
 
 Remo is the chameleon mascot shared with
 [hexagon-exercises](https://github.com/otto-horvath/hexagon-exercises). The
-placeholder project logo pairs Remo with an IRC speech bubble. Remo's test
+project logo pairs Remo with a compact, glossy IRC speech bubble. Remo's test
 colors keep the series visible: **red** when tests fail, **yellow** while work
 is in progress, and **green** when tests pass. Remo is a status marker and
 storyteller, never filler.
@@ -108,7 +110,7 @@ storyteller, never filler.
 The Remo artwork is by Otto Horvath and is shared under
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/); see its
 [source project](https://github.com/otto-horvath/hexagon-exercises). The logo
-is an initial placeholder adaptation and will be refined later.
+adapts the character artwork for this project.
 
 Each exercise guide should end with a “Built it → Broke it → Fixed it” strip,
 using only real discoveries and rework from that milestone. See the existing
@@ -140,7 +142,9 @@ requirements and setup decisions to make when that scaffold is created.
 
 ## License
 
-License and attribution details for this repository will be established before
-the first public code release. Remo and its existing artwork are reused from
-`hexagon-exercises`; retain their attribution and licensing terms when sharing
-or adapting those assets.
+Licensing is split by material; see [LICENSES.md](LICENSES.md) for details.
+Future client source code will use Apache-2.0. The README, exercise guides, and
+Remo artwork are shared under CC BY-NC-SA 4.0. Remo is an existing character by
+Otto Horvath reused from
+[hexagon-exercises](https://github.com/otto-horvath/hexagon-exercises); the
+logo adapts the character artwork.
