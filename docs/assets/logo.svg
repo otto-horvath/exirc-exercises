@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="180" viewBox="0 0 720 180" role="img" aria-labelledby="title description">
+  <title id="title">exirc-exercises logo placeholder</title>
+  <desc id="description">Remo the chameleon beside an IRC speech bubble. Placeholder artwork to be refined.</desc>
+  <defs>
+    <linearGradient id="remo-skin" x1="40" y1="0" x2="170" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ef4444"/>
+      <stop offset="0.35" stop-color="#ef4444"/>
+      <stop offset="0.5" stop-color="#eab308"/>
+      <stop offset="0.65" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="180" rx="24" fill="#0b1220"/>
+  <g transform="translate(12 0) scale(1.05)">
+    <path d="M58 96C30 98 18 116 24 132c6 16 30 16 34 2 3-10-8-16-14-10-4 5 1 10 5 7" fill="none" stroke="url(#remo-skin)" stroke-width="11" stroke-linecap="round"/>
+    <path d="m80 100-8 18m-8 2 8-2 8 6m60-24 8 18m-8 6 8-6 8 2" fill="none" stroke="url(#remo-skin)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M52 92c2-30 38-46 74-42 16 2 24-20 44-18l28 46c-6 14-26 20-48 20-24 10-68 12-98-6Z" fill="url(#remo-skin)"/>
+    <path d="M64 96c28 8 60 6 82-2" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
+    <path d="M174 88c10 0 18-4 22-9" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="166" cy="62" r="15" fill="#16a34a"/>
+    <circle cx="167" cy="62" r="10" fill="#fff"/>
+    <circle cx="170" cy="62" r="4.5" fill="#0f172a"/>
+  </g>
+  <path d="M250 42h400a18 18 0 0 1 18 18v54a18 18 0 0 1-18 18H438l-28 25v-25H250a18 18 0 0 1-18-18V60a18 18 0 0 1 18-18Z" fill="#111c2e" stroke="#38bdf8" stroke-width="4"/>
+  <text x="450" y="104" fill="#f8fafc" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="52" font-weight="700" text-anchor="middle">IRC</text>
+  <text x="465" y="158" fill="#94a3b8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" letter-spacing="2" text-anchor="middle">PLACEHOLDER LOGO</text>
+</svg>
