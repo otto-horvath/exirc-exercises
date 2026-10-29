@@ -8,11 +8,23 @@ defmodule Exirc.IRC.MessageFraming do
   remaining incomplete buffer.
   """
   def feed(buffer, chunk) do
-    {commands, [rest]} =
-      (buffer <> chunk)
-      |> :binary.split("\r\n", [:global])
-      |> Enum.split(-1)
+    {messages, rest} = extract_messages(buffer <> chunk, [])
 
-    {commands, rest}
+    {Enum.reverse(messages), rest}
+  end
+
+  defp extract_messages(data, messages) do
+    case :binary.match(data, "\r\n") do
+      {position, delimiter_size} ->
+        message = binary_part(data, 0, position)
+        rest_position = position + delimiter_size
+        rest_size = byte_size(data) - rest_position
+        rest = binary_part(data, rest_position, rest_size)
+
+        extract_messages(rest, [message | messages])
+
+      :nomatch ->
+        {messages, data}
+    end
   end
 end
