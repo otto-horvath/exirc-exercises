@@ -18,4 +18,12 @@ defmodule Exirc.IRC.MessageParserTest do
              params: ["LS", "*", "multi-prefix sasl"]
            }
   end
+
+  test "parses a source prefix before the command" do
+    assert MessageParser.parse(":friend1!user@host PRIVMSG #brasil :Olá, pessoal!") == %{
+             prefix: "friend1!user@host",
+             command: "PRIVMSG",
+             params: ["#brasil", "Olá, pessoal!"]
+           }
+  end
 end
