@@ -7,7 +7,12 @@ defmodule Exirc.IRC.MessageFraming do
   Adds a chunk to the existing buffer and returns complete messages and the
   remaining incomplete buffer.
   """
-  def feed(_buffer, _chunk) do
-    raise "not implemented"
+  def feed(buffer, chunk) do
+    {commands, [rest]} =
+      (buffer <> chunk)
+      |> String.split("\r\n")
+      |> Enum.split(-1)
+
+    {commands, rest}
   end
 end
