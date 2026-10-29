@@ -6,7 +6,11 @@ defmodule Exirc.IRC.MessageParser do
   @doc """
   Parses one IRC message line.
   """
-  def parse(_message) do
-    raise "not implemented"
+  def parse(message) do
+    [command, parameters] = String.split(message, " ", parts: 2)
+    [target, trailing] = String.split(parameters, " ", parts: 2)
+    <<":", text::binary>> = trailing
+
+    %{prefix: nil, command: command, params: [target, text]}
   end
 end
