@@ -34,7 +34,7 @@ defmodule Exirc.IRC.MessageParser do
       |> String.split(";")
       |> Map.new(fn tag ->
         case String.split(tag, "=", parts: 2) do
-          [key, value] -> {key, value}
+          [key, value] -> {key, unescape_tag_value(value)}
           [key] -> {key, ""}
         end
       end)
@@ -50,6 +50,36 @@ defmodule Exirc.IRC.MessageParser do
   end
 
   defp parse_prefix(message), do: {nil, message}
+
+  defp unescape_tag_value(value) do
+    value
+    |> unescape_tag_value([])
+    |> Enum.reverse()
+    |> IO.iodata_to_binary()
+  end
+
+  defp unescape_tag_value(<<>>, decoded), do: decoded
+
+  defp unescape_tag_value(<<"\\:", rest::binary>>, decoded),
+    do: unescape_tag_value(rest, [";" | decoded])
+
+  defp unescape_tag_value(<<"\\s", rest::binary>>, decoded),
+    do: unescape_tag_value(rest, [" " | decoded])
+
+  defp unescape_tag_value(<<"\\\\", rest::binary>>, decoded),
+    do: unescape_tag_value(rest, ["\\" | decoded])
+
+  defp unescape_tag_value(<<"\\r", rest::binary>>, decoded),
+    do: unescape_tag_value(rest, ["\r" | decoded])
+
+  defp unescape_tag_value(<<"\\n", rest::binary>>, decoded),
+    do: unescape_tag_value(rest, ["\n" | decoded])
+
+  defp unescape_tag_value(<<"\\", rest::binary>>, decoded), do: unescape_tag_value(rest, decoded)
+
+  defp unescape_tag_value(<<byte, rest::binary>>, decoded) do
+    unescape_tag_value(rest, [<<byte>> | decoded])
+  end
 
   defp parse_parameters(<<>>), do: []
   defp parse_parameters(<<" ", rest::binary>>), do: parse_parameters(rest)
