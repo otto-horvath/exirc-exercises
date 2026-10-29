@@ -11,7 +11,12 @@ defmodule Exirc.IRC.MessageParser do
   def parse(message) do
     {tags, message} = parse_tags(message)
     {prefix, message} = parse_prefix(message)
-    [command, parameters] = String.split(message, " ", parts: 2)
+
+    {command, parameters} =
+      case String.split(message, " ", parts: 2) do
+        [command, parameters] -> {command, parameters}
+        [command] -> {command, ""}
+      end
 
     %Message{
       tags: tags,
