@@ -1,20 +1,28 @@
 # Setup and stack requirements
 
-This document records the intended setup for the exercise series. The current
-repository draft is documentation-only: there is no `mix.exs`, lockfile,
-`.tool-versions`, CI workflow, or runnable code yet. Exact version pins and
-commands should be confirmed when the first implementation scaffold is made,
-not guessed in advance.
+This document records the toolchain and local workflow for the exercise series.
+The project pins the BEAM toolchain in `.tool-versions` and uses asdf, a
+version-manager workflow common in the Elixir ecosystem. Run
+`bash scripts/setup.sh` from the repository root. The script installs the
+official asdf release binary when asdf is missing, adds the Erlang and Elixir
+plugins, and installs the versions pinned in `.tool-versions`.
+
+When the script installs asdf, it places the binary in `$HOME/.local/bin` by
+default. Add both that directory and `$HOME/.asdf/shims` to your shell's `PATH`
+to use the installed tools in future terminals. Erlang compilation may require
+platform build tools and libraries listed by
+the [asdf-erlang plugin](https://github.com/asdf-vm/asdf-erlang#before-installing).
 
 ## Required stack
 
 | Component | Requirement for the series |
 | --- | --- |
-| Elixir | Current stable release selected when the Mix project is created; pin it for local development and CI. |
-| Erlang/OTP | A supported OTP release compatible with the selected Elixir version; record the tested version alongside Elixir. |
+| Elixir | 1.20.4, pinned in `.tool-versions`; Mix requires `~> 1.20.0`. |
+| Erlang/OTP | 29.1.1, pinned in `.tool-versions`; supported by Elixir 1.20.4. |
 | Mix | Ships with Elixir; use it for dependencies, compilation, tests, and project tasks. |
 | ExUnit | Ships with Elixir; use it for behavior-focused unit and integration tests. |
 | Formatter | Elixir formatter (`mix format`) with project formatting rules committed alongside the project. |
+| Version manager | asdf with the Erlang and Elixir plugins; `.tool-versions` is also understood by mise. |
 | Network access | Needed for optional manual checks against BrasIRC and Libera.Chat; automated tests should not require public network access. |
 | Phoenix / LiveView | Introduced only when the series reaches its LiveView milestone. |
 
@@ -24,19 +32,21 @@ is later proposed, document what it replaces and what remains learner-built.
 
 ## Version policy
 
-When the Mix project is scaffolded:
+Neither Elixir nor Erlang/OTP has a formal LTS release channel. Elixir publishes
+stable releases; Erlang/OTP provides security fixes for its three latest release
+branches. We use the latest stable Elixir release and a compatible, supported
+OTP release, pinning exact versions for reproducibility.
 
-1. Select a current stable Elixir release and a compatible supported OTP
-   release.
-2. Record exact versions in a tool-version file or equivalent, and use those
-   versions in CI.
-3. State the supported version range in this file and the README.
-4. Recheck compatibility when adding Phoenix/LiveView; do not silently change
-   the baseline toolchain mid-series.
+The pins are refreshed deliberately, not automatically. When updating them,
+check the [Elixir supported versions](https://elixir-lang.org/docs.html) and
+[Erlang/OTP version support](https://www.erlang.org/versions), verify their
+compatibility, and update `.tool-versions` and this document together. Recheck
+compatibility when adding Phoenix/LiveView; do not silently change the baseline
+toolchain mid-series.
 
-## Planned commands
+## Mix commands
 
-Once a Mix project exists, document and verify the exact commands for:
+Once the setup script has installed the toolchain, use Mix directly:
 
 ```shell
 mix deps.get
@@ -46,9 +56,8 @@ mix format --check-formatted
 mix run
 ```
 
-These are the expected Mix workflow, not commands that work in this
-documentation-only draft. A later milestone may add focused test commands,
-local-server tasks, and separate terminal/web run instructions.
+A later milestone may add focused test commands, local-server tasks, and
+separate terminal/web run instructions.
 
 ## Network configuration
 
