@@ -64,14 +64,9 @@ When the user asks to wrap up a milestone:
 - Ground it in the milestone’s stated learning outcomes and what was actually
   discussed; do not invent session events. Carry forward user-requested
   analogies, topic connections, and learning notes into the appropriate guide.
-- For Milestone 1, document the progression from `String.split/2` and
-  `Enum.split/2` to byte-oriented `:binary.split/3` and `:binary.match/2`,
-  including why byte framing fits the TCP stream boundary. Link the official
-  API docs for those functions in the guide’s references:
-  [String.split/2](https://hexdocs.pm/elixir/String.html#split/3),
-  [Enum.split/2](https://hexdocs.pm/elixir/Enum.html#split/2),
-  [:binary.split/3](https://www.erlang.org/doc/apps/stdlib/binary.html#split/3),
-  and [:binary.match/2](https://www.erlang.org/doc/apps/stdlib/binary.html#match/2).
+- Whenever an exercise guide or summary introduces a language, runtime, or
+  library API, include a link to its official API documentation in that page's
+  references.
 - End the guide with Remo’s “Built it → Broke it → Fixed it” strip, using the
   assets under `docs/assets/`.
 - Update the README milestone status and link to its guide in the same wrap-up.
