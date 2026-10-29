@@ -10,4 +10,12 @@ defmodule Exirc.IRC.MessageParserTest do
              params: ["#brasil", "Olá, pessoal!"]
            }
   end
+
+  test "parses multiple middle parameters before a trailing parameter" do
+    assert MessageParser.parse("CAP LS * :multi-prefix sasl") == %{
+             prefix: nil,
+             command: "CAP",
+             params: ["LS", "*", "multi-prefix sasl"]
+           }
+  end
 end
