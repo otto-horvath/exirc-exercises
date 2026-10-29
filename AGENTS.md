@@ -32,14 +32,23 @@ implementation.
 
 1. Read the relevant milestone and learning outcomes in `README.md` and any
    linked guide.
-2. Explain the next small step and its purpose before adding tests.
-3. Add only tests for that step. Let the user implement production behavior.
-4. Run the focused test, explain failures, then run the relevant broader checks
-   as the project grows. Keep earlier milestone tests passing.
-5. Offer hints only when asked, becoming more specific in stages: concept,
+2. Start a branch named `exercise-N-<slug>` from the up-to-date `main` branch.
+   If the working tree is not clean or the base is not current, resolve that
+   before beginning; do not discard existing work.
+3. Explain the plan and next small step before adding tests: the concepts,
+   learning outcomes, and how the step fits the client architecture.
+4. Work one step at a time: add only behavior tests for that step, plus the
+   minimal scaffold they need. Let the user implement production behavior.
+5. Commit the initial scaffold and tests as a checkpoint. Commit again when the
+   relevant exercise tests are green. Keep these checkpoints separate to show
+   the test-first progression; do not amend or combine them.
+6. Run the focused test after each user implementation attempt, explain
+   failures, then run the relevant broader checks as the project grows. Keep
+   earlier milestone tests passing.
+7. Offer hints only when asked, becoming more specific in stages: concept,
    relevant API/documentation, then code shape. Do not jump to the full
    implementation.
-6. Report test status with Remo’s color convention: red for failures, yellow
+8. Report test status with Remo’s color convention: red for failures, yellow
    while work is underway, green when the relevant suite passes.
 
 If a test appears incorrect, explain why and agree with the user before
@@ -49,14 +58,21 @@ changing it. Never weaken or remove a test merely to make the suite pass.
 
 When the user asks to wrap up a milestone:
 
-- Write a practical guide under `docs/` covering concepts, decisions,
-  tradeoffs, actual mistakes/rework, and reliable references.
+- Write a structured practical guide under `docs/` covering the learning goals,
+  concepts learned, decisions and tradeoffs, actual mistakes/rework, and
+  reliable references.
 - Ground it in the milestone’s stated learning outcomes and what was actually
-  discussed; do not invent session events.
+  discussed; do not invent session events. Carry forward user-requested
+  analogies, topic connections, and learning notes into the appropriate guide.
+- Whenever an exercise guide or summary introduces a language, runtime, or
+  library API, include a link to its official API documentation in that page's
+  references.
 - End the guide with Remo’s “Built it → Broke it → Fixed it” strip, using the
   assets under `docs/assets/`.
-- Update the README milestone status and link to its guide.
-- Do not commit, push, or create a pull request unless explicitly asked.
+- Update the README milestone status and link to its guide in the same wrap-up.
+- The user has asked for separate scaffold/tests and green-test commits. Do not
+  commit wrap-up docs unless they explicitly ask for that additional commit.
+- Do not push or create a pull request unless explicitly asked.
 
 ## Remo
 

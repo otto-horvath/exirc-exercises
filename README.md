@@ -40,6 +40,36 @@ manual compatibility checks, not test dependencies.
 - Explore failure handling, reconnect behavior, bounded message history, and
   useful observability.
 
+## Protocol analogy and command map
+
+IRC is a text protocol commonly carried over TCP, like HTTP/1.x. In both, TCP
+provides an ordered byte stream, not message-sized reads, so clients must handle
+messages split across reads or several messages arriving together. IRC frames
+messages as CRLF-terminated lines; HTTP/1.x uses its own headers and
+body-framing rules. The analogy helps explain stream framing, but the protocols'
+message structures and interaction patterns differ.
+
+We will build this command map as the milestones introduce each behavior. It is
+a learning roadmap, not a promise that every IRC server or connection needs
+every command; server replies are identified separately from client commands.
+
+| Milestone | Command / reply | Direction and purpose |
+| --- | --- | --- |
+| 2 | `PASS` *(optional)* | Client → server; supply a connection password when the network requires one. Keep credentials in local configuration. |
+| 2 | `NICK` | Client → server; request the client's nickname. |
+| 2 | `USER` | Client → server; send the remaining initial registration information. |
+| 2 | `001` (`RPL_WELCOME`) | Server → client; successful registration reply. |
+| 3 | `PING` / `PONG` | Server → client / client → server; keep the connection responsive and answer server liveness checks. |
+| 4 | `LIST` | Client → server; request the channel list. |
+| 4 | `JOIN` / `PART` | Client → server; join or leave a channel. |
+| 4 | `PRIVMSG` | Client ↔ server; send channel or private chat messages and receive them from the server. |
+| 6 | `CAP LS` / `CAP REQ` / `CAP END` | Client ↔ server; discover, request, and finish negotiating selected IRCv3 capabilities. |
+| 6 | `005` (`RPL_ISUPPORT`) | Server → client; advertise network-specific features and limits. |
+
+The list may be refined as tests and compatibility work reveal the actual
+behavior needed. Numeric replies are server messages, not commands the client
+sends.
+
 ## The learning loop
 
 Each milestone should be small and test-first: agree on one behavior, write a
@@ -62,7 +92,7 @@ Dependencies and frameworks are added only when a milestone needs them.
 
 | # | Milestone | Main learning |
 | ---: | --- | --- |
-| 1 | IRC message framing and parser | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
+| 1 | IRC message framing and parser — complete | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
 | 2 | TCP/TLS connection and registration | sockets, registration flow, server numerics, timeouts |
 | 3 | IRC session behavior | `PING`/`PONG`, incoming events, explicit state, process messaging |
 | 4 | Terminal channels and chat | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
@@ -73,6 +103,9 @@ Dependencies and frameworks are added only when a milestone needs them.
 Potential extensions include per-conversation bounded in-memory history and
 logging/telemetry. They are candidates for later exercises, not prerequisites
 for the initial client. Broadway is out of scope.
+
+See the [Exercise 1 guide](docs/exercise-1-irc-message-framing-and-parser.md)
+for the framing and parser concepts, decisions, and test progression.
 
 ## Protocol references and integration targets
 
@@ -118,15 +151,18 @@ Remo conventions in `hexagon-exercises` for the visual strip pattern.
 
 ## Working with this repository
 
-This initial repository version contains documentation and conventions only;
-the Mix project and executable setup commands will be added with the first
-code milestone. See [docs/setup.md](docs/setup.md) for the planned stack
-requirements and setup decisions to make when that scaffold is created.
+Milestone branches use the pattern `exercise-N-<slug>`, with separate commits
+for the initial scaffold/tests and for the point when the relevant tests pass.
+Completed milestones get a structured learning guide under `docs/`, linked
+here and marked complete in the roadmap. The pinned toolchain is Elixir 1.20.4
+with Erlang/OTP 29.1.1, managed with asdf. Run `bash scripts/setup.sh`; see
+[docs/setup.md](docs/setup.md) for setup and workflow details.
 
 ## Guides and session notes
 
 - [Setup and stack requirements](docs/setup.md)
 - [IRC protocol and compatibility notes](docs/irc-protocol-notes.md)
+- [Exercise 1 — IRC message framing and parser](docs/exercise-1-irc-message-framing-and-parser.md)
 - Future exercise guides and optional session notes will live under `docs/`.
 
 ## References
