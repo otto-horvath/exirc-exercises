@@ -22,4 +22,14 @@ defmodule Exirc.IRC.MessageParserTest do
                params: ["#brasil", "Olá, pessoal!"]
              }
   end
+
+  test "parses a key-value tag before the command" do
+    assert MessageParser.parse("@time=2026-10-29T12:00:00Z PING :server") ==
+             %Message{
+               tags: %{"time" => "2026-10-29T12:00:00Z"},
+               prefix: nil,
+               command: "PING",
+               params: ["server"]
+             }
+  end
 end
