@@ -1,29 +1,25 @@
 defmodule Exirc.IRC.MessageParserTest do
   use ExUnit.Case, async: true
 
+  alias Exirc.IRC.Message
   alias Exirc.IRC.MessageParser
 
   test "parses a command with a middle parameter and a trailing message" do
-    assert MessageParser.parse("PRIVMSG #brasil :Olá, pessoal!") == %{
-             prefix: nil,
-             command: "PRIVMSG",
-             params: ["#brasil", "Olá, pessoal!"]
-           }
+    assert MessageParser.parse("PRIVMSG #brasil :Olá, pessoal!") ==
+             %Message{prefix: nil, command: "PRIVMSG", params: ["#brasil", "Olá, pessoal!"]}
   end
 
   test "parses multiple middle parameters before a trailing parameter" do
-    assert MessageParser.parse("CAP LS * :multi-prefix sasl") == %{
-             prefix: nil,
-             command: "CAP",
-             params: ["LS", "*", "multi-prefix sasl"]
-           }
+    assert MessageParser.parse("CAP LS * :multi-prefix sasl") ==
+             %Message{prefix: nil, command: "CAP", params: ["LS", "*", "multi-prefix sasl"]}
   end
 
   test "parses a source prefix before the command" do
-    assert MessageParser.parse(":friend1!user@host PRIVMSG #brasil :Olá, pessoal!") == %{
-             prefix: "friend1!user@host",
-             command: "PRIVMSG",
-             params: ["#brasil", "Olá, pessoal!"]
-           }
+    assert MessageParser.parse(":friend1!user@host PRIVMSG #brasil :Olá, pessoal!") ==
+             %Message{
+               prefix: "friend1!user@host",
+               command: "PRIVMSG",
+               params: ["#brasil", "Olá, pessoal!"]
+             }
   end
 end
