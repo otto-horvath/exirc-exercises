@@ -1,4 +1,6 @@
 defmodule Exirc.IRC.MessageFraming do
+  @crlf "\r\n"
+
   @moduledoc """
   Frames IRC messages from chunks of a TCP byte stream.
   """
@@ -14,7 +16,7 @@ defmodule Exirc.IRC.MessageFraming do
   end
 
   defp extract_messages(data, messages) do
-    case :binary.match(data, "\r\n") do
+    case :binary.match(data, @crlf) do
       {position, delimiter_size} ->
         message = binary_part(data, 0, position)
         rest_position = position + delimiter_size
