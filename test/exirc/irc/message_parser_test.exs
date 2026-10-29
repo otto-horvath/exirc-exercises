@@ -41,4 +41,35 @@ defmodule Exirc.IRC.MessageParserTest do
              params: []
            }
   end
+
+  test "parses tags and a source prefix together" do
+    assert MessageParser.parse(
+             "@time=2026-10-29T12:00:00Z :friend1!user@host PRIVMSG #brasil :Olá!"
+           ) ==
+             %Message{
+               tags: %{"time" => "2026-10-29T12:00:00Z"},
+               prefix: "friend1!user@host",
+               command: "PRIVMSG",
+               params: ["#brasil", "Olá!"]
+             }
+  end
+
+  test "unescapes values in multiple tags and represents a key-only tag" do
+    message =
+      "@space=hello\\sworld;semi=one\\:two;slash=a\\\\b;cr=a\\rb;lf=a\\nb;account PING :server"
+
+    assert MessageParser.parse(message) == %Message{
+             tags: %{
+               "space" => "hello world",
+               "semi" => "one;two",
+               "slash" => "a\\b",
+               "cr" => "a\rb",
+               "lf" => "a\nb",
+               "account" => ""
+             },
+             prefix: nil,
+             command: "PING",
+             params: ["server"]
+           }
+  end
 end
