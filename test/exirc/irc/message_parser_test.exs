@@ -32,4 +32,13 @@ defmodule Exirc.IRC.MessageParserTest do
                params: ["server"]
              }
   end
+
+  test "parses a command with no parameters" do
+    assert MessageParser.parse("QUIT") == %Message{
+             tags: %{},
+             prefix: nil,
+             command: "QUIT",
+             params: []
+           }
+  end
 end
