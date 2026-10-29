@@ -23,4 +23,8 @@ defmodule Exirc.IRC.MessageFramingTest do
     assert MessageFraming.feed("", "PING :server\r") == {[], "PING :server\r"}
     assert MessageFraming.feed("PING :server\r", "\n") == {["PING :server"], ""}
   end
+
+  test "ignores an empty CRLF-delimited line" do
+    assert MessageFraming.feed("", "\r\n") == {[], ""}
+  end
 end
