@@ -92,7 +92,7 @@ Dependencies and frameworks are added only when a milestone needs them.
 
 | # | Milestone | Main learning |
 | ---: | --- | --- |
-| 1 | IRC message framing and parser *(in progress)* | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
+| 1 | IRC message framing and parser — complete | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
 | 2 | TCP/TLS connection and registration | sockets, registration flow, server numerics, timeouts |
 | 3 | IRC session behavior | `PING`/`PONG`, incoming events, explicit state, process messaging |
 | 4 | Terminal channels and chat | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
@@ -103,6 +103,9 @@ Dependencies and frameworks are added only when a milestone needs them.
 Potential extensions include per-conversation bounded in-memory history and
 logging/telemetry. They are candidates for later exercises, not prerequisites
 for the initial client. Broadway is out of scope.
+
+See the [Exercise 1 guide](docs/exercise-1-irc-message-framing-and-parser.md)
+for the framing and parser concepts, decisions, and test progression.
 
 ## Protocol references and integration targets
 
@@ -148,18 +151,18 @@ Remo conventions in `hexagon-exercises` for the visual strip pattern.
 
 ## Working with this repository
 
-The first code milestone is in progress. Milestone branches use the pattern
-`exercise-N-<slug>`, with separate commits for the initial scaffold/tests and
-for the point when the relevant tests pass. Completed milestones get a
-structured learning guide under `docs/`, linked here and marked complete in the
-roadmap. The pinned toolchain is Elixir 1.20.4 with Erlang/OTP 29.1.1, managed
-with asdf. Run `bash scripts/setup.sh`; see [docs/setup.md](docs/setup.md) for
-setup and workflow details.
+Milestone branches use the pattern `exercise-N-<slug>`, with separate commits
+for the initial scaffold/tests and for the point when the relevant tests pass.
+Completed milestones get a structured learning guide under `docs/`, linked
+here and marked complete in the roadmap. The pinned toolchain is Elixir 1.20.4
+with Erlang/OTP 29.1.1, managed with asdf. Run `bash scripts/setup.sh`; see
+[docs/setup.md](docs/setup.md) for setup and workflow details.
 
 ## Guides and session notes
 
 - [Setup and stack requirements](docs/setup.md)
 - [IRC protocol and compatibility notes](docs/irc-protocol-notes.md)
+- [Exercise 1 — IRC message framing and parser](docs/exercise-1-irc-message-framing-and-parser.md)
 - Future exercise guides and optional session notes will live under `docs/`.
 
 ## References
