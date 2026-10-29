@@ -62,7 +62,8 @@ When the user asks to wrap up a milestone:
   concepts learned, decisions and tradeoffs, actual mistakes/rework, and
   reliable references.
 - Ground it in the milestone’s stated learning outcomes and what was actually
-  discussed; do not invent session events.
+  discussed; do not invent session events. Carry forward user-requested
+  analogies, topic connections, and learning notes into the appropriate guide.
 - End the guide with Remo’s “Built it → Broke it → Fixed it” strip, using the
   assets under `docs/assets/`.
 - Update the README milestone status and link to its guide in the same wrap-up.

@@ -40,6 +40,36 @@ manual compatibility checks, not test dependencies.
 - Explore failure handling, reconnect behavior, bounded message history, and
   useful observability.
 
+## Protocol analogy and command map
+
+IRC is a text protocol commonly carried over TCP, like HTTP/1.x. In both, TCP
+provides an ordered byte stream, not message-sized reads, so clients must handle
+messages split across reads or several messages arriving together. IRC frames
+messages as CRLF-terminated lines; HTTP/1.x uses its own headers and
+body-framing rules. The analogy helps explain stream framing, but the protocols'
+message structures and interaction patterns differ.
+
+We will build this command map as the milestones introduce each behavior. It is
+a learning roadmap, not a promise that every IRC server or connection needs
+every command; server replies are identified separately from client commands.
+
+| Milestone | Command / reply | Direction and purpose |
+| --- | --- | --- |
+| 2 | `PASS` *(optional)* | Client → server; supply a connection password when the network requires one. Keep credentials in local configuration. |
+| 2 | `NICK` | Client → server; request the client's nickname. |
+| 2 | `USER` | Client → server; send the remaining initial registration information. |
+| 2 | `001` (`RPL_WELCOME`) | Server → client; successful registration reply. |
+| 3 | `PING` / `PONG` | Server → client / client → server; keep the connection responsive and answer server liveness checks. |
+| 4 | `LIST` | Client → server; request the channel list. |
+| 4 | `JOIN` / `PART` | Client → server; join or leave a channel. |
+| 4 | `PRIVMSG` | Client ↔ server; send channel or private chat messages and receive them from the server. |
+| 6 | `CAP LS` / `CAP REQ` / `CAP END` | Client ↔ server; discover, request, and finish negotiating selected IRCv3 capabilities. |
+| 6 | `005` (`RPL_ISUPPORT`) | Server → client; advertise network-specific features and limits. |
+
+The list may be refined as tests and compatibility work reveal the actual
+behavior needed. Numeric replies are server messages, not commands the client
+sends.
+
 ## The learning loop
 
 Each milestone should be small and test-first: agree on one behavior, write a
