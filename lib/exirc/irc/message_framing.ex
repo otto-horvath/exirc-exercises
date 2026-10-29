@@ -10,7 +10,7 @@ defmodule Exirc.IRC.MessageFraming do
   def feed(buffer, chunk) do
     {commands, [rest]} =
       (buffer <> chunk)
-      |> String.split("\r\n")
+      |> :binary.split("\r\n", [:global])
       |> Enum.split(-1)
 
     {commands, rest}
