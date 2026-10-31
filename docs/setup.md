@@ -3,8 +3,9 @@
 This document records the toolchain and local workflow for the exercise series.
 The project pins the BEAM toolchain in `.tool-versions` and uses asdf, a
 version-manager workflow common in the Elixir ecosystem. Run
-`bash scripts/setup.sh` from the repository root. The script installs the
-official asdf release binary when asdf is missing, adds the Erlang and Elixir
+`bash scripts/setup.sh` from the repository root. On macOS, the script first
+uses Homebrew to install `openssl@3` and `unixodbc`, which the Erlang build
+expects. It then installs the official asdf release binary when asdf is missing, adds the Erlang and Elixir
 plugins, and installs the versions pinned in `.tool-versions`.
 
 When the script installs asdf, it places the binary in `$HOME/.local/bin` by

@@ -38,6 +38,22 @@ install_asdf() {
   echo "Add $ASDF_BIN_DIR to PATH in your shell configuration to use asdf later."
 }
 
+install_build_deps() {
+  if [ "$(uname -s)" != Darwin ]; then
+    return
+  fi
+
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is required to install Erlang build dependencies on macOS." >&2
+    exit 1
+  fi
+
+  # The asdf-erlang plugin passes these Homebrew prefixes to the Erlang build,
+  # even when the formulae are not installed.
+  brew install openssl@3 unixodbc
+}
+
+install_build_deps
 install_asdf
 export PATH="$ASDF_DATA_DIR/shims:$ASDF_BIN_DIR:$PATH"
 
