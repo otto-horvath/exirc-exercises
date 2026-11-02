@@ -8,10 +8,7 @@ defmodule Exirc.IRC.Registration do
   @doc """
   Returns the registration messages in the order they must be sent.
   """
-  def messages(registration) do
-    nick = Map.get(registration, :nick)
-    username = Map.get(registration, :username)
-    realname = Map.get(registration, :realname)
+  def messages(%{nick: nick, username: username, realname: realname} = registration) do
     password = Map.get(registration, :password)
 
     [pass_command(password), nick_command(nick), user_command(username, realname)]

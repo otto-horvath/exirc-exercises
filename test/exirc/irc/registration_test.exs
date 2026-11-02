@@ -27,6 +27,12 @@ defmodule Exirc.IRC.RegistrationTest do
            ] = Registration.messages(Map.put(@registration, :password, "local-test-password"))
   end
 
+  test "fails fast when a required registration field is missing" do
+    assert_raise FunctionClauseError, fn ->
+      Registration.messages(Map.delete(@registration, :nick))
+    end
+  end
+
   test "registration messages format as wire lines" do
     assert @registration
            |> Registration.messages()
