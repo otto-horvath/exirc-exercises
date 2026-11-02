@@ -85,6 +85,50 @@ defmodule Exirc.IRC.RegistrationFlowTest do
     assert {:ok, %Connection{}, %Message{command: "002"}} = Task.await(task)
   end
 
+  describe "when the server pings before the welcome" do
+    test "answers PING with the same token and still returns the welcome" do
+      {server, task} = register()
+
+      read_nick_and_user(server)
+      FakeIRCServer.send_line(server, "PING :3948572")
+
+      assert FakeIRCServer.recv_line(server) == "PONG :3948572"
+
+      FakeIRCServer.send_line(server, @welcome)
+
+      assert {:ok, %Connection{}, %Message{command: "001"}} = Task.await(task)
+    end
+
+    test "echoes a token containing spaces as one trailing parameter" do
+      {server, task} = register()
+
+      read_nick_and_user(server)
+      FakeIRCServer.send_line(server, "PING :irc.test check 42")
+
+      assert FakeIRCServer.recv_line(server) == "PONG :irc.test check 42"
+
+      FakeIRCServer.send_line(server, @welcome)
+
+      assert {:ok, %Connection{}, %Message{command: "001"}} = Task.await(task)
+    end
+
+    test "answers every PING received before the welcome" do
+      {server, task} = register()
+
+      read_nick_and_user(server)
+      FakeIRCServer.send_line(server, "PING :first")
+      assert FakeIRCServer.recv_line(server) == "PONG :first"
+
+      FakeIRCServer.send_line(server, ":irc.test NOTICE * :*** Checking Ident")
+      FakeIRCServer.send_line(server, "PING :second")
+      assert FakeIRCServer.recv_line(server) == "PONG :second"
+
+      FakeIRCServer.send_line(server, @welcome)
+
+      assert {:ok, %Connection{}, %Message{command: "001"}} = Task.await(task)
+    end
+  end
+
   describe "when registration fails" do
     # Keeps the client process (and so its socket) alive after register/3
     # returns, so the test can check that register/3 itself closed the socket.
