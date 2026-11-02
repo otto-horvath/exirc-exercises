@@ -4,6 +4,7 @@ defmodule Exirc.IRC.Registration do
   """
 
   alias Exirc.IRC.Message
+  alias Exirc.IRC.Connection
 
   @doc """
   Returns the registration messages in the order they must be sent.
@@ -19,8 +20,22 @@ defmodule Exirc.IRC.Registration do
   Sends the registration messages over `connection` and waits for the
   server's welcome reply (`001`).
   """
-  def register(_connection, _registration) do
-    raise "not implemented"
+  def register(connection, registration) do
+    registration
+    |> Map.new()
+    |> messages()
+    |> Enum.each(fn msg -> Connection.send_message(connection, msg) end)
+
+    await_welcome(connection)
+  end
+
+  defp await_welcome(connection) do
+    {:ok, connection, message} = Connection.recv_message(connection)
+
+    case message do
+      %Message{command: "001"} -> {:ok, connection, message}
+      _other -> await_welcome(connection)
+    end
   end
 
   defp pass_command(nil), do: nil
