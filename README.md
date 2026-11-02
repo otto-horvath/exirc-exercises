@@ -90,16 +90,16 @@ See [AGENTS.md](AGENTS.md) for the working agreement and
 The order builds a usable terminal client before introducing the web UI.
 Dependencies and frameworks are added only when a milestone needs them.
 
-| # | Milestone | Main learning |
-| ---: | --- | --- |
-| 1 | IRC message framing and parser — complete | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
-| 2 | TCP connection and registration — complete | sockets, framing state, registration flow, server numerics, timeouts, local fake server |
-| 3 | IRC session behavior | `PING`/`PONG`, incoming events, explicit state, process messaging |
-| 4 | Terminal channels and chat | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
-| 5 | Client lifecycle and resilience | supervision, multiple network connections, disconnects and reconnect policy |
-| 5.5 | TLS transport (optional) | `:ssl` connections, certificate verification, a local TLS fake server |
-| 6 | IRCv3 capability negotiation | `CAP`, selected capabilities, server-specific compatibility |
-| 7 | Phoenix LiveView interface | UI events and updates over the existing client behavior |
+| # | Milestone | Status | Main learning |
+| ---: | --- | --- | --- |
+| 1 | IRC message framing and parser | solved | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
+| 2 | TCP connection and registration | solved | sockets, framing state, registration flow, server numerics, timeouts, local fake server |
+| 3 | IRC session behavior | | `PING`/`PONG`, incoming events, explicit state, process messaging |
+| 4 | Terminal channels and chat | | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
+| 5 | Client lifecycle and resilience | | supervision, multiple network connections, disconnects and reconnect policy |
+| 5.5 | TLS transport (optional) | | `:ssl` connections, certificate verification, a local TLS fake server |
+| 6 | IRCv3 capability negotiation | | `CAP`, selected capabilities, server-specific compatibility |
+| 7 | Phoenix LiveView interface | | UI events and updates over the existing client behavior |
 
 Potential extensions include per-conversation bounded in-memory history and
 logging/telemetry. They are candidates for later exercises, not prerequisites
