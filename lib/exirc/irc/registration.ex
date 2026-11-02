@@ -1,6 +1,6 @@
 defmodule Exirc.IRC.Registration do
   @moduledoc """
-  Builds the messages a client sends to register an IRC connection.
+  Registers a client on an IRC connection.
   """
 
   alias Exirc.IRC.Message
@@ -13,6 +13,14 @@ defmodule Exirc.IRC.Registration do
 
     [pass_command(password), nick_command(nick), user_command(username, realname)]
     |> Enum.reject(&is_nil/1)
+  end
+
+  @doc """
+  Sends the registration messages over `connection` and waits for the
+  server's welcome reply (`001`).
+  """
+  def register(_connection, _registration) do
+    raise "not implemented"
   end
 
   defp pass_command(nil), do: nil

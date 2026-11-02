@@ -5,98 +5,70 @@ defmodule Exirc.IRC.ConnectionTest do
   alias Exirc.IRC.Message
   alias Exirc.Test.FakeIRCServer
 
-  @opts [nick: "remo", username: "remo", realname: "Remo the Chameleon"]
-  @welcome ":irc.test 001 remo :Welcome to the Test IRC Network remo"
-
-  # register/3 blocks until the server welcomes the client, so the client runs
-  # in a task while the test process plays the server.
-  defp start_register(opts \\ @opts) do
+  # connect/3 returns once the OS has queued the connection, so the test
+  # process can play both the client and the fake server.
+  setup do
     server = FakeIRCServer.listen()
-    task = Task.async(fn -> Connection.register("127.0.0.1", server.port, opts) end)
+    {:ok, connection} = Connection.connect("127.0.0.1", server.port)
 
-    {FakeIRCServer.accept(server), task}
+    %{server: FakeIRCServer.accept(server), connection: connection}
   end
 
-  defp read_registration(server) do
+  test "connects to the server", %{connection: connection} do
+    assert %Connection{} = connection
+  end
+
+  test "sends a message as a CRLF-terminated line", %{server: server, connection: connection} do
+    assert {:ok, %Connection{}} =
+             Connection.send_message(connection, %Message{command: "NICK", params: ["remo"]})
+
     assert FakeIRCServer.recv_line(server) == "NICK remo"
-    assert FakeIRCServer.recv_line(server) == "USER remo 0 * :Remo the Chameleon"
   end
 
-  test "sends NICK and USER after connecting" do
-    {server, task} = start_register()
+  test "receives a parsed message", %{server: server, connection: connection} do
+    FakeIRCServer.send_line(server, ":irc.test 001 remo :Welcome to the Test IRC Network remo")
 
-    read_registration(server)
-    FakeIRCServer.send_line(server, @welcome)
+    assert {:ok, %Connection{}, message} = Connection.recv_message(connection)
 
-    assert {:ok, %Connection{}, _welcome} = Task.await(task)
-  end
-
-  test "sends PASS first when a password is given" do
-    {server, task} = start_register(Keyword.put(@opts, :password, "local-test-password"))
-
-    assert FakeIRCServer.recv_line(server) == "PASS local-test-password"
-    read_registration(server)
-    FakeIRCServer.send_line(server, @welcome)
-
-    assert {:ok, %Connection{}, _welcome} = Task.await(task)
-  end
-
-  test "returns the parsed welcome reply" do
-    {server, task} = start_register()
-
-    read_registration(server)
-    FakeIRCServer.send_line(server, @welcome)
-
-    assert {:ok, _connection, welcome} = Task.await(task)
-
-    assert welcome == %Message{
+    assert message == %Message{
              prefix: "irc.test",
              command: "001",
              params: ["remo", "Welcome to the Test IRC Network remo"]
            }
   end
 
-  test "skips server messages received before the welcome" do
-    {server, task} = start_register()
+  test "receives several messages sent in one write, in order", %{
+    server: server,
+    connection: connection
+  } do
+    FakeIRCServer.send_raw(server, ":irc.test 001 remo :Welcome\r\n:irc.test 002 remo :Host\r\n")
 
-    read_registration(server)
-    FakeIRCServer.send_line(server, ":irc.test NOTICE * :*** Looking up your hostname...")
-    FakeIRCServer.send_line(server, @welcome)
-
-    assert {:ok, _connection, %Message{command: "001"}} = Task.await(task)
+    assert {:ok, connection, %Message{command: "001"}} = Connection.recv_message(connection)
+    assert {:ok, _connection, %Message{command: "002"}} = Connection.recv_message(connection)
   end
 
-  test "frames several server messages sent in one write" do
-    {server, task} = start_register()
-
-    read_registration(server)
-
-    FakeIRCServer.send_raw(
-      server,
-      ":irc.test NOTICE * :*** Looking up your hostname...\r\n" <> @welcome <> "\r\n"
-    )
-
-    assert {:ok, _connection, %Message{command: "001"}} = Task.await(task)
-  end
-
-  test "frames a welcome split across writes" do
-    {server, task} = start_register()
-
-    read_registration(server)
+  test "receives a message split across writes", %{server: server, connection: connection} do
     FakeIRCServer.send_raw(server, ":irc.test 001 remo :Welcome to the")
     FakeIRCServer.send_raw(server, " Test IRC Network remo\r")
     FakeIRCServer.send_raw(server, "\n")
 
-    assert {:ok, _connection, %Message{command: "001"}} = Task.await(task)
+    assert {:ok, _connection, %Message{command: "001", params: ["remo", welcome]}} =
+             Connection.recv_message(connection)
+
+    assert welcome == "Welcome to the Test IRC Network remo"
   end
 
-  test "keeps bytes received after the welcome in the connection buffer" do
-    {server, task} = start_register()
+  test "keeps a partial message until the rest arrives", %{
+    server: server,
+    connection: connection
+  } do
+    FakeIRCServer.send_raw(server, ":irc.test 001 remo :Welcome\r\n:irc.test 002 remo :Your")
 
-    read_registration(server)
-    FakeIRCServer.send_raw(server, @welcome <> "\r\n:irc.test 002 remo :Your host")
+    assert {:ok, connection, %Message{command: "001"}} = Connection.recv_message(connection)
 
-    assert {:ok, %Connection{buffer: ":irc.test 002 remo :Your host"}, _welcome} =
-             Task.await(task)
+    FakeIRCServer.send_raw(server, " host is irc.test\r\n")
+
+    assert {:ok, _connection, %Message{command: "002", params: ["remo", "Your host is irc.test"]}} =
+             Connection.recv_message(connection)
   end
 end
