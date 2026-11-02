@@ -71,4 +71,46 @@ defmodule Exirc.IRC.ConnectionTest do
     assert {:ok, _connection, %Message{command: "002", params: ["remo", "Your host is irc.test"]}} =
              Connection.recv_message(connection)
   end
+
+  test "returns an error when the server closes the connection", %{
+    server: server,
+    connection: connection
+  } do
+    FakeIRCServer.close(server)
+
+    assert Connection.recv_message(connection) == {:error, :closed}
+  end
+
+  test "returns an error when no complete message arrives in time", %{
+    server: server,
+    connection: connection
+  } do
+    FakeIRCServer.send_raw(server, ":irc.test 001 remo :Welc")
+
+    assert Connection.recv_message(connection, 50) == {:error, :timeout}
+  end
+
+  test "returns a waiting message without waiting for the timeout", %{
+    server: server,
+    connection: connection
+  } do
+    FakeIRCServer.send_raw(server, ":irc.test 001 remo :Welcome\r\n:irc.test 002 remo :Host\r\n")
+
+    assert {:ok, connection, %Message{command: "001"}} = Connection.recv_message(connection, 50)
+    assert {:ok, _connection, %Message{command: "002"}} = Connection.recv_message(connection, 0)
+  end
+end
+
+defmodule Exirc.IRC.ConnectionConnectTest do
+  use ExUnit.Case, async: true
+
+  alias Exirc.IRC.Connection
+  alias Exirc.Test.FakeIRCServer
+
+  test "returns an error when nothing is listening" do
+    server = FakeIRCServer.listen()
+    :ok = :gen_tcp.close(server.listen_socket)
+
+    assert Connection.connect("127.0.0.1", server.port) == {:error, :econnrefused}
+  end
 end

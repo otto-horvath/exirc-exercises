@@ -56,4 +56,16 @@ defmodule Exirc.Test.FakeIRCServerTest do
 
     assert :gen_tcp.recv(client, 0, 1_000) == {:error, :closed}
   end
+
+  test "asserts that the client closed the connection", %{server: server, client: client} do
+    :ok = :gen_tcp.close(client)
+
+    assert FakeIRCServer.assert_closed(server) == :ok
+  end
+
+  test "fails when the client keeps the connection open", %{server: server} do
+    assert_raise ExUnit.AssertionError, ~r/expected the client to close/, fn ->
+      FakeIRCServer.assert_closed(server, 10)
+    end
+  end
 end

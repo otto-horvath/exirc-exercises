@@ -79,6 +79,17 @@ defmodule Exirc.Test.FakeIRCServer do
   end
 
   @doc """
+  Fails the test unless the client closes the connection within `timeout`.
+  """
+  def assert_closed(%__MODULE__{socket: socket}, timeout \\ @default_timeout) do
+    case :gen_tcp.recv(socket, 0, timeout) do
+      {:error, :closed} -> :ok
+      {:ok, data} -> flunk("expected the client to close, but it sent: #{inspect(data)}")
+      {:error, reason} -> flunk("expected the client to close, got: #{inspect(reason)}")
+    end
+  end
+
+  @doc """
   Closes the client connection, simulating the server hanging up.
   """
   def close(%__MODULE__{socket: socket}) do
