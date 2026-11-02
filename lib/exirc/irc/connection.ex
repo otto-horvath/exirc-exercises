@@ -18,9 +18,13 @@ defmodule Exirc.IRC.Connection do
   Opens a connection to `host` and `port`.
   """
   def connect(host, port, _opts \\ []) do
-    {:ok, socket} = :gen_tcp.connect(String.to_charlist(host), port, [:binary, active: false])
+    case :gen_tcp.connect(String.to_charlist(host), port, [:binary, active: false]) do
+      {:ok, socket} ->
+        {:ok, %__MODULE__{socket: socket}}
 
-    {:ok, %__MODULE__{socket: socket}}
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -40,13 +44,20 @@ defmodule Exirc.IRC.Connection do
   Receives the next IRC message from the server, waiting for more bytes when
   no complete message is available yet.
   """
-  def recv_message(%__MODULE__{messages: []} = connection) do
-    {:ok, raw_bytes} = :gen_tcp.recv(connection.socket, 0)
-    {messages, buffer} = MessageFraming.feed(connection.buffer, raw_bytes)
-    recv_message(%__MODULE__{connection | messages: messages, buffer: buffer})
+  def recv_message(connection, timeout \\ :infinity)
+
+  def recv_message(%__MODULE__{messages: []} = connection, timeout) do
+    case :gen_tcp.recv(connection.socket, 0, timeout) do
+      {:ok, raw_bytes} ->
+        {messages, buffer} = MessageFraming.feed(connection.buffer, raw_bytes)
+        recv_message(%__MODULE__{connection | messages: messages, buffer: buffer}, timeout)
+
+      error ->
+        error
+    end
   end
 
-  def recv_message(%__MODULE__{messages: [raw_message | messages]} = connection) do
+  def recv_message(%__MODULE__{messages: [raw_message | messages]} = connection, _timeout) do
     message = MessageParser.parse(raw_message)
     {:ok, %__MODULE__{connection | messages: messages}, message}
   end
