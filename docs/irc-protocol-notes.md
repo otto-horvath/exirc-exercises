@@ -171,6 +171,32 @@ and `005` values during the exercise. Plain TCP on port 6667 can be used for a
 manual registration check with the current client; use a private local
 configuration for the nickname and any password.
 
+#### Manual check, 2026-11-02 (plain TCP, port 6667)
+
+The Exercise 2 client registered on `irc.brasirc.com.br:6667` without a
+password, using a throwaway nickname. The values below are as observed that
+day and may change; nickname, host, and address details are left out.
+
+- **Registration:** `001` arrived with the client's nick as the first parameter
+  and the welcome text last. The server identifies itself as InspIRCd 4 in `002`
+  and `004`. Whether a `PING` arrived before `001` was not recorded, because
+  `register/3` answers it silently.
+- **Burst after `001`:** `002`–`004`, three `005` lines, the `25x`/`26x` server
+  statistics, the MOTD (`375`, many `372`, `376`), `396` (the host shown to
+  others was replaced by a masked one), a `MODE` change for the client's own
+  nick, and a `NOTICE` from the network's services. Roughly 80 lines were
+  already waiting on the connection when `register/3` returned.
+- **`005` is split across several lines**, so a client has to merge the
+  parameters. Values that matter later: `CASEMAPPING=ascii`, `CHANTYPES=#`,
+  `NICKLEN=31`, `LINELEN=512`, `CHANNELLEN=64`, `TOPICLEN=330`,
+  `NETWORK=BrasIRC`, `PREFIX=(qVaohv)~&!@%+`, `STATUSMSG=~&!@%+`, `ELIST=CMNTU`.
+- **Encoding:** the MOTD contains UTF-8 text (accented letters and symbols) and
+  parsed without problems.
+- **TLS:** the MOTD advertises `+6697` for SSL, a candidate for the TLS
+  milestone's manual check.
+- **Limitation seen:** after `001` nothing reads the socket, so a `PING` from the
+  server goes unanswered until the session process exists.
+
 ### Libera.Chat
 
 Libera.Chat documents TLS access at `irc.libera.chat:6697` and has a guide for
