@@ -59,7 +59,6 @@ every command; server replies are identified separately from client commands.
 | 2 | `NICK` | Client → server; request the client's nickname. |
 | 2 | `USER` | Client → server; send the remaining initial registration information. |
 | 2 | `001` (`RPL_WELCOME`) | Server → client; successful registration reply. |
-| 2 | `PING` / `PONG` *(during registration)* | Server → client / client → server; answer the server's check so registration can finish. |
 | 3 | `PING` / `PONG` | Server → client / client → server; keep the connection responsive and answer server liveness checks. |
 | 4 | `LIST` | Client → server; request the channel list. |
 | 4 | `JOIN` / `PART` | Client → server; join or leave a channel. |
@@ -94,8 +93,8 @@ Dependencies and frameworks are added only when a milestone needs them.
 | # | Milestone | Main learning |
 | ---: | --- | --- |
 | 1 | IRC message framing and parser — complete | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
-| 2 | TCP connection and registration — complete | sockets, framing state, registration flow, server numerics, whole-registration deadline, `PING` during registration, local fake server |
-| 3 | IRC session behavior | continuous reading and `PING`/`PONG` after registration, incoming events, explicit state, process messaging |
+| 2 | TCP connection and registration — complete | sockets, framing state, registration flow, server numerics, timeouts, local fake server |
+| 3 | IRC session behavior | `PING`/`PONG`, incoming events, explicit state, process messaging |
 | 4 | Terminal channels and chat | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
 | 5 | Client lifecycle and resilience | supervision, multiple network connections, disconnects and reconnect policy |
 | 5.5 | TLS transport (optional) | `:ssl` connections, certificate verification, a local TLS fake server |
