@@ -21,6 +21,11 @@ defmodule Exirc.IRC.MessageFormatterTest do
            }) == "USER remo 0 * :Remo the Chameleon\r\n"
   end
 
+  test "marks a sole parameter containing spaces as trailing" do
+    assert MessageFormatter.format(%Message{command: "QUIT", params: ["Gone home"]}) ==
+             "QUIT :Gone home\r\n"
+  end
+
   test "marks an empty final parameter as trailing" do
     assert MessageFormatter.format(%Message{command: "PRIVMSG", params: ["#brasil", ""]}) ==
              "PRIVMSG #brasil :\r\n"
