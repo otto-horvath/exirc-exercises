@@ -44,6 +44,10 @@ defmodule Exirc.IRC.Registration do
     case Connection.recv_message(connection, remaining) do
       {:ok, connection, message} ->
         case message do
+          %Message{command: "PING", params: params} ->
+            Connection.send_message(connection, %Message{command: "PONG", params: params})
+            await_welcome(connection, deadline)
+
           %Message{command: "001"} ->
             {:ok, connection, message}
 
