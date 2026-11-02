@@ -28,9 +28,11 @@ defmodule Exirc.IRC.RegistrationTest do
   end
 
   test "fails fast when a required registration field is missing" do
-    assert_raise FunctionClauseError, fn ->
-      Registration.messages(Map.delete(@registration, :nick))
-    end
+    # Built from a keyword list so the missing key is only known at runtime;
+    # a literal map without :nick is already rejected by the type checker.
+    without_nick = @registration |> Map.to_list() |> Keyword.delete(:nick) |> Map.new()
+
+    assert_raise FunctionClauseError, fn -> Registration.messages(without_nick) end
   end
 
   test "registration messages format as wire lines" do
