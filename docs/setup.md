@@ -9,8 +9,14 @@ expects. It then installs the official asdf release binary when asdf is missing,
 plugins, and installs the versions pinned in `.tool-versions`.
 
 When the script installs asdf, it places the binary in `$HOME/.local/bin` by
-default. Add both that directory and `$HOME/.asdf/shims` to your shell's `PATH`
-to use the installed tools in future terminals. Erlang compilation may require
+default. After installing the toolchain, the script appends a marked block to
+your shell configuration (`~/.zshrc` for zsh; `~/.bash_profile` on macOS or
+`~/.bashrc` elsewhere for bash) that puts `$HOME/.asdf/shims` and
+`$HOME/.local/bin` at the front of `PATH`, so new terminals find `erl`,
+`elixir`, `iex`, and `mix`. Re-running the script does not duplicate the block.
+Open a new terminal or `source` the file afterward. Set
+`SETUP_SKIP_SHELL_CONFIG=1` to skip this and manage `PATH` yourself; other
+shells must be configured manually. Erlang compilation may require
 platform build tools and libraries listed by
 the [asdf-erlang plugin](https://github.com/asdf-vm/asdf-erlang#before-installing).
 

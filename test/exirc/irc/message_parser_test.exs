@@ -4,7 +4,7 @@ defmodule Exirc.IRC.MessageParserTest do
   alias Exirc.IRC.Message
   alias Exirc.IRC.MessageParser
 
-  test "parses a command with a middle parameter and a trailing message" do
+  test "parses a command with a middle parameter and a trailing parameter" do
     assert MessageParser.parse("PRIVMSG #brasil :Olá, pessoal!") ==
              %Message{prefix: nil, command: "PRIVMSG", params: ["#brasil", "Olá, pessoal!"]}
   end

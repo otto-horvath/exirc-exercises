@@ -28,6 +28,15 @@ implementation.
   project’s eventual pinned Elixir/OTP toolchain. The exact versions and
   commands are intentionally not pinned until the Mix project is scaffolded.
 
+## Start of every session
+
+Read `docs/notes-for-next-session.md` first. If it lists pending refactors,
+missing parts, or wrap-up work, tell the user what is there and ask whether
+they want to do it **before starting the next exercise** or **before wrapping
+up** the current one. Do not start either until they answer. When an item is
+done, remove it from the page; delete the page's content when nothing is left,
+keeping only its heading and usage note.
+
 ## Start and guide an exercise
 
 1. Read the relevant milestone and learning outcomes in `README.md` and any

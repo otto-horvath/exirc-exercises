@@ -35,7 +35,54 @@ install_asdf() {
   chmod 0755 "$ASDF_BIN_DIR/asdf"
   export PATH="$ASDF_BIN_DIR:$PATH"
   echo "Installed asdf v${ASDF_VERSION} in $ASDF_BIN_DIR"
-  echo "Add $ASDF_BIN_DIR to PATH in your shell configuration to use asdf later."
+}
+
+# Prints the rc file for the user's login shell, or nothing if unsupported.
+shell_rc_file() {
+  case "$(basename "${SHELL:-}")" in
+    zsh) echo "${ZDOTDIR:-$HOME}/.zshrc" ;;
+    bash)
+      # macOS Terminal opens login shells, which read .bash_profile.
+      if [ "$(uname -s)" = Darwin ]; then
+        echo "$HOME/.bash_profile"
+      else
+        echo "$HOME/.bashrc"
+      fi
+      ;;
+  esac
+}
+
+# Writes an idempotent PATH block so new terminals find asdf and its shims.
+# Set SETUP_SKIP_SHELL_CONFIG=1 to manage the shell configuration yourself.
+persist_shell_config() {
+  local marker_start="# >>> asdf (exirc-exercises setup) >>>"
+  local marker_end="# <<< asdf (exirc-exercises setup) <<<"
+  local rc_file
+
+  if [ "${SETUP_SKIP_SHELL_CONFIG:-0}" = 1 ]; then
+    echo "Skipping shell configuration. Add $ASDF_BIN_DIR and $ASDF_DATA_DIR/shims to PATH yourself."
+    return
+  fi
+
+  rc_file="$(shell_rc_file)"
+  if [ -z "$rc_file" ]; then
+    echo "Unsupported shell '${SHELL:-unknown}'. Add $ASDF_BIN_DIR and $ASDF_DATA_DIR/shims to PATH yourself."
+    return
+  fi
+
+  if [ -f "$rc_file" ] && grep -qF "$marker_start" "$rc_file"; then
+    echo "Shell configuration already present in $rc_file"
+    return
+  fi
+
+  {
+    echo ""
+    echo "$marker_start"
+    echo "export ASDF_DATA_DIR=\"$ASDF_DATA_DIR\""
+    echo "export PATH=\"\$ASDF_DATA_DIR/shims:$ASDF_BIN_DIR:\$PATH\""
+    echo "$marker_end"
+  } >>"$rc_file"
+  echo "Added asdf to PATH in $rc_file. Open a new terminal or run: source $rc_file"
 }
 
 install_build_deps() {
@@ -63,4 +110,5 @@ asdf plugin list | grep -qx elixir || asdf plugin add elixir https://github.com/
 asdf install
 asdf reshim
 elixir --version
-echo "BEAM toolchain installed. Add $ASDF_BIN_DIR and $ASDF_DATA_DIR/shims to PATH in your shell configuration to use it in a new terminal."
+persist_shell_config
+echo "BEAM toolchain installed."

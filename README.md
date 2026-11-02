@@ -90,22 +90,25 @@ See [AGENTS.md](AGENTS.md) for the working agreement and
 The order builds a usable terminal client before introducing the web UI.
 Dependencies and frameworks are added only when a milestone needs them.
 
-| # | Milestone | Main learning |
-| ---: | --- | --- |
-| 1 | IRC message framing and parser — complete | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
-| 2 | TCP/TLS connection and registration | sockets, registration flow, server numerics, timeouts |
-| 3 | IRC session behavior | `PING`/`PONG`, incoming events, explicit state, process messaging |
-| 4 | Terminal channels and chat | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
-| 5 | Client lifecycle and resilience | supervision, multiple network connections, disconnects and reconnect policy |
-| 6 | IRCv3 capability negotiation | `CAP`, selected capabilities, server-specific compatibility |
-| 7 | Phoenix LiveView interface | UI events and updates over the existing client behavior |
+| # | Milestone | Status | Main learning |
+| ---: | --- | --- | --- |
+| 1 | IRC message framing and parser | solved | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
+| 2 | TCP connection and registration | solved | sockets, framing state, registration flow, server numerics, timeouts, local fake server |
+| 3 | IRC session behavior | | `PING`/`PONG`, incoming events, explicit state, process messaging |
+| 4 | Terminal channels and chat | | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
+| 5 | Client lifecycle and resilience | | supervision, multiple network connections, disconnects and reconnect policy |
+| 5.5 | TLS transport (optional) | | `:ssl` connections, certificate verification, a local TLS fake server |
+| 6 | IRCv3 capability negotiation | | `CAP`, selected capabilities, server-specific compatibility |
+| 7 | Phoenix LiveView interface | | UI events and updates over the existing client behavior |
 
 Potential extensions include per-conversation bounded in-memory history and
 logging/telemetry. They are candidates for later exercises, not prerequisites
 for the initial client. Broadway is out of scope.
 
 See the [Exercise 1 guide](docs/exercise-1-irc-message-framing-and-parser.md)
-for the framing and parser concepts, decisions, and test progression.
+for the framing and parser concepts, decisions, and test progression, and the
+[Exercise 2 guide](docs/exercise-2-tcp-connection-and-registration.md) for the
+connection, registration, and fake-server work.
 
 ## Protocol references and integration targets
 
@@ -163,6 +166,8 @@ with Erlang/OTP 29.1.1, managed with asdf. Run `bash scripts/setup.sh`; see
 - [Setup and stack requirements](docs/setup.md)
 - [IRC protocol and compatibility notes](docs/irc-protocol-notes.md)
 - [Exercise 1 — IRC message framing and parser](docs/exercise-1-irc-message-framing-and-parser.md)
+- [Exercise 2 — TCP connection and registration](docs/exercise-2-tcp-connection-and-registration.md)
+- [Notes for next session](docs/notes-for-next-session.md)
 - Future exercise guides and optional session notes will live under `docs/`.
 
 ## References
