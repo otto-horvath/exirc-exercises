@@ -3,6 +3,7 @@ defmodule Exirc.IRC.RegistrationFlowTest do
 
   alias Exirc.IRC.Connection
   alias Exirc.IRC.Message
+  alias Exirc.IRC.MessageParser
   alias Exirc.IRC.Registration
   alias Exirc.Test.FakeIRCServer
 
@@ -26,6 +27,14 @@ defmodule Exirc.IRC.RegistrationFlowTest do
 
   defp register(registration \\ @registration) do
     start_client(&Registration.register(&1, registration))
+  end
+
+  # The colon before a parameter without spaces is optional on the wire, so
+  # compare the parsed message instead of the exact line.
+  defp assert_pong(server, token) do
+    assert server
+           |> FakeIRCServer.recv_line()
+           |> MessageParser.parse() == %Message{command: "PONG", params: [token]}
   end
 
   defp read_nick_and_user(server) do
@@ -92,7 +101,7 @@ defmodule Exirc.IRC.RegistrationFlowTest do
       read_nick_and_user(server)
       FakeIRCServer.send_line(server, "PING :3948572")
 
-      assert FakeIRCServer.recv_line(server) == "PONG :3948572"
+      assert_pong(server, "3948572")
 
       FakeIRCServer.send_line(server, @welcome)
 
@@ -105,7 +114,7 @@ defmodule Exirc.IRC.RegistrationFlowTest do
       read_nick_and_user(server)
       FakeIRCServer.send_line(server, "PING :irc.test check 42")
 
-      assert FakeIRCServer.recv_line(server) == "PONG :irc.test check 42"
+      assert_pong(server, "irc.test check 42")
 
       FakeIRCServer.send_line(server, @welcome)
 
@@ -117,11 +126,11 @@ defmodule Exirc.IRC.RegistrationFlowTest do
 
       read_nick_and_user(server)
       FakeIRCServer.send_line(server, "PING :first")
-      assert FakeIRCServer.recv_line(server) == "PONG :first"
+      assert_pong(server, "first")
 
       FakeIRCServer.send_line(server, ":irc.test NOTICE * :*** Checking Ident")
       FakeIRCServer.send_line(server, "PING :second")
-      assert FakeIRCServer.recv_line(server) == "PONG :second"
+      assert_pong(server, "second")
 
       FakeIRCServer.send_line(server, @welcome)
 
