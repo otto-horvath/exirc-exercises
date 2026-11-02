@@ -27,6 +27,8 @@ defmodule Exirc.IRC.Connection do
     end
   end
 
+  def close(%__MODULE__{socket: socket}), do: :gen_tcp.close(socket)
+
   @doc """
   Sends one IRC message to the server.
   """
