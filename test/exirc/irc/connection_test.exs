@@ -25,6 +25,21 @@ defmodule Exirc.IRC.ConnectionTest do
     assert FakeIRCServer.recv_line(server) == "NICK remo"
   end
 
+  test "returns an error when sending on a closed connection", %{connection: connection} do
+    :ok = Connection.close(connection)
+
+    # apply/3 keeps the call dynamic: send_message/2 currently always returns
+    # {:ok, connection}, so a direct comparison warns about disjoint types
+    # before the implementation is fixed.
+    result =
+      apply(Connection, :send_message, [
+        connection,
+        %Message{command: "NICK", params: ["remo"]}
+      ])
+
+    assert result == {:error, :closed}
+  end
+
   test "receives a parsed message", %{server: server, connection: connection} do
     FakeIRCServer.send_line(server, ":irc.test 001 remo :Welcome to the Test IRC Network remo")
 
