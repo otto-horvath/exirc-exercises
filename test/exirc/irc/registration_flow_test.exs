@@ -203,6 +203,17 @@ defmodule Exirc.IRC.RegistrationFlowTest do
       stop_client(task)
     end
 
+    test "returns an error when sending registration fails" do
+      {server, task} =
+        start_client(fn connection ->
+          :ok = Connection.close(connection)
+          Registration.register(connection, @registration)
+        end)
+
+      assert Task.await(task) == {:error, :closed}
+      FakeIRCServer.assert_closed(server)
+    end
+
     test "returns an error when no welcome arrives in time" do
       {server, task} = register_and_report(timeout: 50)
 
