@@ -30,23 +30,22 @@ defmodule Exirc.IRC.Registration do
     timeout = Keyword.get(opts, :timeout, @default_timeout)
     deadline = System.monotonic_time(:millisecond) + timeout
 
-    success =
+    registration_messages =
       registration
       |> Map.new()
       |> messages()
-      |> Enum.reduce_while(
-        0,
-        fn msg, _acc ->
-          case Connection.send_message(connection, msg) do
-            {:ok, _} -> {:cont, :ok}
-            error -> {:halt, error}
-          end
-        end
-      )
 
-    case success do
-      :ok -> await_welcome(connection, deadline)
-      error -> error
+    case send_messages(connection, registration_messages) do
+      {:ok, connection} -> await_welcome(connection, deadline)
+      {:error, reason} -> close_with_error(connection, reason)
+    end
+  end
+
+  defp send_messages(connection, []), do: {:ok, connection}
+
+  defp send_messages(connection, [message | rest]) do
+    with {:ok, connection} <- Connection.send_message(connection, message) do
+      send_messages(connection, rest)
     end
   end
 
@@ -54,35 +53,37 @@ defmodule Exirc.IRC.Registration do
     remaining = max(deadline - System.monotonic_time(:millisecond), 0)
 
     case Connection.recv_message(connection, remaining) do
-      {:ok, connection, message} ->
-        case message do
-          %Message{command: "PING", params: params} ->
-            Connection.send_message(connection, %Message{command: "PONG", params: params})
-            await_welcome(connection, deadline)
+      {:ok, connection, %Message{command: "PING", params: params}} ->
+        pong = %Message{command: "PONG", params: params}
 
-          %Message{command: "001"} ->
-            {:ok, connection, message}
-
-          %Message{command: "433", params: [_, nick | _]} ->
-            Connection.close(connection)
-            {:error, {:nickname_in_use, nick}}
-
-          %Message{command: "464"} ->
-            Connection.close(connection)
-            {:error, :password_mismatch}
-
-          %Message{command: "ERROR", params: [error_message]} ->
-            Connection.close(connection)
-            {:error, {:server_error, error_message}}
-
-          _other ->
-            await_welcome(connection, deadline)
+        case send_messages(connection, [pong]) do
+          {:ok, connection} -> await_welcome(connection, deadline)
+          {:error, reason} -> close_with_error(connection, reason)
         end
 
-      error ->
-        Connection.close(connection)
-        error
+      {:ok, connection, %Message{command: "001"} = message} ->
+        {:ok, connection, message}
+
+      {:ok, connection, %Message{command: "433", params: [_, nick | _]}} ->
+        close_with_error(connection, {:nickname_in_use, nick})
+
+      {:ok, connection, %Message{command: "464"}} ->
+        close_with_error(connection, :password_mismatch)
+
+      {:ok, connection, %Message{command: "ERROR", params: [error_message]}} ->
+        close_with_error(connection, {:server_error, error_message})
+
+      {:ok, connection, _other} ->
+        await_welcome(connection, deadline)
+
+      {:error, reason} ->
+        close_with_error(connection, reason)
     end
+  end
+
+  defp close_with_error(connection, reason) do
+    Connection.close(connection)
+    {:error, reason}
   end
 
   defp pass_command(nil), do: nil
