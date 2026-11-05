@@ -16,20 +16,39 @@ defmodule Exirc.IRC.MessageFormatter do
 
   defp join_params([]), do: []
 
-  defp join_params([param]) do
+  defp join_params(params) do
+    {middle, [last]} = Enum.split(params, -1)
+
+    Enum.each(middle, &validate_middle!/1)
+    validate_text!(last)
+
+    middle ++ [format_last(last)]
+  end
+
+  defp validate_middle!(param) do
+    validate_text!(param)
+
     if trailing?(param) do
-      [":#{param}"]
-    else
-      [param]
+      raise ArgumentError,
+            "non-final parameter must be a middle parameter, got: #{inspect(param)}"
     end
   end
 
-  defp join_params([middle | tail]) do
-    if trailing?(middle) do
-      [Enum.join([":#{middle}", tail], " ")]
-    else
-      [middle | join_params(tail)]
+  defp validate_text!(param) when is_binary(param) do
+    if String.contains?(param, ["\r", "\n", "\0"]) do
+      raise ArgumentError,
+            "parameter cannot contain CR, LF, or NUL, got: #{inspect(param)}"
     end
+
+    param
+  end
+
+  defp validate_text!(param) do
+    raise ArgumentError, "parameter must be a string, got: #{inspect(param)}"
+  end
+
+  defp format_last(param) do
+    if trailing?(param), do: ":" <> param, else: param
   end
 
   # A parameter must be sent as the trailing parameter when it could not be

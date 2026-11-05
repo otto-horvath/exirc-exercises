@@ -203,6 +203,28 @@ defmodule Exirc.IRC.RegistrationFlowTest do
       stop_client(task)
     end
 
+    test "returns an error when sending registration fails" do
+      {server, task} =
+        start_client(fn connection ->
+          :ok = Connection.close(connection)
+          Registration.register(connection, @registration)
+        end)
+
+      assert Task.await(task) == {:error, :closed}
+      FakeIRCServer.assert_closed(server)
+    end
+
+    test "returns the send error instead of waiting for a welcome" do
+      # A UDP socket is a deterministic stand-in for a broken TCP socket:
+      # :gen_tcp.send/2 fails immediately with :einval, while :gen_tcp.recv/2
+      # only times out. Ignoring the send error therefore ends in :timeout.
+      {:ok, socket} = :gen_udp.open(0, [:binary, active: false])
+      connection = %Connection{socket: socket}
+
+      assert Registration.register(connection, @registration, timeout: 50) ==
+               {:error, :einval}
+    end
+
     test "returns an error when no welcome arrives in time" do
       {server, task} = register_and_report(timeout: 50)
 

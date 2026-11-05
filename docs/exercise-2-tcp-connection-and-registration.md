@@ -54,6 +54,9 @@ otherwise it is optional. In other words: if the last parameter could not be a
 middle parameter, it must be trailing. `NICK remo` and `NICK :remo` are the same
 message. Only the last parameter can be trailing, so a space in an earlier
 parameter is an invalid message rather than something to merge.
+`MessageFormatter.format/1` now enforces this: a non-final parameter that is
+empty, contains a space, or starts with `:` raises `ArgumentError`, as does CR,
+LF, or NUL in any parameter.
 
 ### Registration order
 
@@ -161,13 +164,15 @@ source of the bytes changes.
 | nothing listening | `{:error, :econnrefused}` | `Connection.connect/3` |
 | server hangs up | `{:error, :closed}` | `recv_message/2`, `register/3` |
 | nothing complete in time | `{:error, :timeout}` | `recv_message/2`, `register/3` |
+| sending a message fails | `{:error, reason}` | `send_message/2`, `register/3` |
 | `433` nickname in use | `{:error, {:nickname_in_use, nick}}` | `register/3` |
 | `464` wrong password | `{:error, :password_mismatch}` | `register/3` |
 | `ERROR :reason` | `{:error, {:server_error, reason}}` | `register/3` |
 
 In a numeric reply the first parameter is the client's own nick (or `*` before
 registration), so the nick that is taken is the second parameter of `433`.
-`register/3` closes the socket on these failures and on a timeout.
+`register/3` closes the socket on these failures, on a send failure, and on a
+timeout.
 
 **A deadline, not a per-read timeout.** `recv_message/2` takes a timeout for one
 read. If `register/3` gave each read the full timeout, a server that kept sending
@@ -268,7 +273,8 @@ the whole-registration deadline, and `PING` answered one or more times.
 
 Final checks for this milestone:
 
-- `mix test` — 57 tests passed.
+- `mix test` — 67 tests passed after the follow-up send-error and formatter
+  refactors.
 - `mix format --check-formatted` — passed.
 - `mix compile --force` — no warnings.
 
