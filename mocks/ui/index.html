@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>exirc — BrasIRC mock</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="connect">
+    <a class="skip-link" href="#nickname">Skip to the connect form</a>
+
+    <main class="connect-shell">
+      <section class="connect-card" aria-labelledby="connect-title">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">#<span>_</span></div>
+          <div>
+            <h1 id="connect-title">exirc</h1>
+            <p>BrasIRC web client · interface mock</p>
+          </div>
+        </div>
+
+        <form id="connect-form" novalidate>
+          <label class="field">
+            <span>Nickname</span>
+            <input
+              id="nickname"
+              name="nickname"
+              type="text"
+              maxlength="30"
+              autocomplete="nickname"
+              placeholder="yournick"
+              required
+              autofocus
+            />
+          </label>
+
+          <label class="field">
+            <span>Channel <em>optional</em></span>
+            <input
+              id="channel"
+              name="channel"
+              type="text"
+              maxlength="64"
+              autocomplete="off"
+              placeholder="#brasirc"
+            />
+          </label>
+
+          <label class="field">
+            <span>Server</span>
+            <input value="irc.brasirc.com.br · 6697 (TLS)" readonly />
+          </label>
+
+          <details class="advanced">
+            <summary>Advanced options</summary>
+            <label class="field">
+              <span>Server password <em>optional</em></span>
+              <input
+                id="server-password"
+                name="server-password"
+                type="password"
+                autocomplete="off"
+                placeholder="••••••••"
+              />
+            </label>
+            <label class="field">
+              <span>NickServ password <em>optional</em></span>
+              <input
+                id="nickserv-password"
+                name="nickserv-password"
+                type="password"
+                autocomplete="off"
+                placeholder="••••••••"
+              />
+            </label>
+          </details>
+
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+
+          <div class="connect-actions">
+            <button class="button button-primary" type="submit">Connect to mock</button>
+            <button class="button button-ghost" id="demo-connect" type="button">
+              Open with a demo nick
+            </button>
+          </div>
+        </form>
+
+        <p class="connect-foot">
+          <span class="dot dot-online" aria-hidden="true"></span>
+          Local simulation only — no network connection is made.
+        </p>
+      </section>
+
+      <aside class="connect-aside" aria-labelledby="aside-title">
+        <p class="eyebrow">Classic IRC, browser-native</p>
+        <h2 id="aside-title">One window. Every conversation.</h2>
+        <p>
+          Dense, keyboard-first, and built around server events. This mock shows one
+          path through the interface without opening a socket.
+        </p>
+
+        <ul class="feature-list">
+          <li><kbd>Alt</kbd> + <kbd>1…9</kbd> jump to a tab</li>
+          <li><kbd>Alt</kbd> + <kbd>←</kbd>/<kbd>→</kbd> cycle tabs</li>
+          <li><kbd>Tab</kbd> completes nicknames in the composer</li>
+          <li><kbd>Enter</kbd> sends; <kbd>Shift</kbd> + <kbd>Enter</kbd> adds a line</li>
+        </ul>
+
+        <p class="muted-note">
+          Nickname required. Server and NickServ passwords live under advanced options,
+          where they belong. Nothing is stored or sent.
+        </p>
+      </aside>
+    </main>
+
+    <script src="connect.js"></script>
+  </body>
+</html>
