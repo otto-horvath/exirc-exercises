@@ -44,4 +44,48 @@ defmodule Exirc.IRC.MessageFormatterTest do
            |> String.trim_trailing("\r\n")
            |> MessageParser.parse() == message
   end
+
+  describe "invalid input" do
+    test "raises when a non-final parameter contains a space" do
+      assert_raise ArgumentError, fn ->
+        MessageFormatter.format(%Message{command: "PRIVMSG", params: ["a b", "c", "d"]})
+      end
+    end
+
+    test "raises when a non-final parameter starts with a colon" do
+      assert_raise ArgumentError, fn ->
+        MessageFormatter.format(%Message{command: "PRIVMSG", params: [":middle", "last"]})
+      end
+    end
+
+    test "raises when a non-final parameter is empty" do
+      assert_raise ArgumentError, fn ->
+        MessageFormatter.format(%Message{command: "PRIVMSG", params: ["", "last"]})
+      end
+    end
+
+    test "raises when a parameter contains CR" do
+      assert_raise ArgumentError, fn ->
+        MessageFormatter.format(%Message{command: "PRIVMSG", params: ["#brasil", "hello\rworld"]})
+      end
+    end
+
+    test "raises when a parameter contains LF" do
+      assert_raise ArgumentError, fn ->
+        MessageFormatter.format(%Message{command: "PRIVMSG", params: ["#brasil", "hello\nworld"]})
+      end
+    end
+
+    test "raises when a parameter contains NUL" do
+      assert_raise ArgumentError, fn ->
+        MessageFormatter.format(%Message{command: "PRIVMSG", params: ["#brasil", "hello\0world"]})
+      end
+    end
+
+    test "raises when a parameter is not a binary" do
+      assert_raise ArgumentError, fn ->
+        MessageFormatter.format(%Message{command: "PRIVMSG", params: ["#brasil", :not_a_string]})
+      end
+    end
+  end
 end
