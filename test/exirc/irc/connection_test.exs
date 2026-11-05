@@ -28,16 +28,8 @@ defmodule Exirc.IRC.ConnectionTest do
   test "returns an error when sending on a closed connection", %{connection: connection} do
     :ok = Connection.close(connection)
 
-    # apply/3 keeps the call dynamic: send_message/2 currently always returns
-    # {:ok, connection}, so a direct comparison warns about disjoint types
-    # before the implementation is fixed.
-    result =
-      apply(Connection, :send_message, [
-        connection,
-        %Message{command: "NICK", params: ["remo"]}
-      ])
-
-    assert result == {:error, :closed}
+    assert Connection.send_message(connection, %Message{command: "NICK", params: ["remo"]}) ==
+             {:error, :closed}
   end
 
   test "receives a parsed message", %{server: server, connection: connection} do

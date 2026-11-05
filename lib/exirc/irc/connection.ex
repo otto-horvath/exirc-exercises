@@ -37,9 +37,10 @@ defmodule Exirc.IRC.Connection do
       message
       |> MessageFormatter.format()
 
-    :gen_tcp.send(connection.socket, line)
-
-    {:ok, connection}
+    case :gen_tcp.send(connection.socket, line) do
+      :ok -> {:ok, connection}
+      other -> other
+    end
   end
 
   @doc """
