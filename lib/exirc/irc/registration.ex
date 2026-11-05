@@ -38,14 +38,14 @@ defmodule Exirc.IRC.Registration do
         0,
         fn msg, _acc ->
           case Connection.send_message(connection, msg) do
-            {:ok, connection} -> {:cont, connection}
+            {:ok, _} -> {:cont, :ok}
             error -> {:halt, error}
           end
         end
       )
 
     case success do
-      {:ok, connection} -> await_welcome(connection, deadline)
+      :ok -> await_welcome(connection, deadline)
       error -> error
     end
   end
