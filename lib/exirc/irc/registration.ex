@@ -30,12 +30,24 @@ defmodule Exirc.IRC.Registration do
     timeout = Keyword.get(opts, :timeout, @default_timeout)
     deadline = System.monotonic_time(:millisecond) + timeout
 
-    registration
-    |> Map.new()
-    |> messages()
-    |> Enum.each(fn msg -> Connection.send_message(connection, msg) end)
+    success =
+      registration
+      |> Map.new()
+      |> messages()
+      |> Enum.reduce_while(
+        0,
+        fn msg, _acc ->
+          case Connection.send_message(connection, msg) do
+            {:ok, connection} -> {:cont, connection}
+            error -> {:halt, error}
+          end
+        end
+      )
 
-    await_welcome(connection, deadline)
+    case success do
+      {:ok, connection} -> await_welcome(connection, deadline)
+      error -> error
+    end
   end
 
   defp await_welcome(connection, deadline) do
