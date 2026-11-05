@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>exirc — BrasIRC mock</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="app">
+    <a class="skip-link" href="#message-log">Skip to messages</a>
+
+    <div class="app-shell">
+      <header class="statusbar" aria-label="Server status">
+        <div class="status-left">
+          <span class="wordmark">exirc</span>
+          <span class="status-sep" aria-hidden="true">/</span>
+          <span class="network">BrasIRC</span>
+          <span
+            class="status-pill status-online"
+            id="connection-pill"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="dot" aria-hidden="true"></span>
+            <span id="connection-label">Connected</span>
+          </span>
+        </div>
+
+        <div class="status-right">
+          <span class="server-host" id="server-host">irc.brasirc.com.br:6697</span>
+          <button
+            class="icon-button"
+            id="shortcuts-button"
+            type="button"
+            title="Keyboard shortcuts"
+            aria-label="Keyboard shortcuts"
+            aria-haspopup="dialog"
+          >
+            ?
+          </button>
+          <button
+            class="demo-toggle"
+            id="demo-toggle"
+            type="button"
+            aria-controls="sidebar"
+            aria-expanded="false"
+          >
+            Demo
+          </button>
+        </div>
+      </header>
+
+      <div class="banner" id="connection-banner" hidden>
+        <span id="connection-banner-text">
+          Connection lost. The mock is offline until you reconnect.
+        </span>
+        <button class="button" id="banner-reconnect" type="button">Reconnect</button>
+      </div>
+
+      <nav class="tabbar" aria-label="Conversations">
+        <div class="tabs" id="tabs" role="tablist" aria-label="Open conversations"></div>
+        <button
+          class="icon-button join-tab"
+          id="join-button"
+          type="button"
+          title="Join a channel"
+          aria-label="Join a channel"
+          aria-haspopup="dialog"
+        >
+          +
+        </button>
+      </nav>
+
+      <main class="workspace">
+        <section
+          class="conversation"
+          id="conversation-panel"
+          role="tabpanel"
+          aria-label="Conversation"
+          tabindex="-1"
+        >
+          <div class="topicbar">
+            <div class="topic-main">
+              <span class="conversation-kind" id="conversation-kind" aria-hidden="true">#</span>
+              <span class="conversation-name" id="conversation-name">#brasirc</span>
+              <span class="topic" id="conversation-topic"></span>
+            </div>
+            <div class="topic-actions">
+              <span class="member-count" id="member-count"></span>
+              <button
+                class="button button-ghost mobile-only"
+                id="members-button"
+                type="button"
+                aria-controls="sidebar"
+                aria-expanded="false"
+              >
+                Members
+              </button>
+            </div>
+          </div>
+
+          <div class="log-wrap">
+            <div
+              class="message-log"
+              id="message-log"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions"
+              tabindex="0"
+            ></div>
+            <button class="jump-latest" id="jump-latest" type="button" hidden>
+              Jump to latest ↓
+            </button>
+          </div>
+
+          <div class="composer">
+            <div class="composer-prompt" id="composer-prompt">#brasirc &gt;</div>
+            <div class="composer-field">
+              <label class="sr-only" for="composer-input">Message the active conversation</label>
+              <textarea
+                id="composer-input"
+                rows="1"
+                maxlength="400"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Message #brasirc"
+                aria-describedby="composer-hint"
+              ></textarea>
+              <button
+                class="send-button"
+                id="send-button"
+                type="button"
+                title="Send (Enter)"
+                aria-label="Send message"
+              >
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 12 20 4l-5 8 5 8-16-8Z"></path>
+                  <path d="M4 12h11"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="composer-meta">
+              <span id="composer-hint">
+                Enter to send · Shift+Enter for a new line · Tab completes nicks
+              </span>
+              <span id="composer-count">0/400</span>
+            </div>
+          </div>
+        </section>
+
+        <aside class="sidebar" id="sidebar" aria-label="Members and demo controls">
+          <button
+            class="icon-button sidebar-close"
+            id="sidebar-close"
+            type="button"
+            aria-label="Close members and demo panel"
+          >
+            ×
+          </button>
+
+          <section class="members-panel" aria-labelledby="members-title">
+            <div class="panel-header">
+              <h2 id="members-title">Members</h2>
+              <span id="members-summary"></span>
+            </div>
+            <div class="member-list" id="member-list"></div>
+          </section>
+
+          <section class="demo-panel" aria-labelledby="demo-title">
+            <div class="panel-header">
+              <h2 id="demo-title">Demo events</h2>
+              <span>local</span>
+            </div>
+            <p class="panel-note">Simulate server events. Nothing leaves this tab.</p>
+            <div class="demo-grid">
+              <button type="button" data-demo="message">Message</button>
+              <button type="button" data-demo="mention">Mention</button>
+              <button type="button" data-demo="join">Join</button>
+              <button type="button" data-demo="part">Part</button>
+              <button type="button" data-demo="dm">DM</button>
+              <button type="button" data-demo="clear">Clear</button>
+              <button type="button" data-demo="disconnect">Disconnect</button>
+              <button type="button" data-demo="reconnect">Reconnect</button>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <div class="overlay" id="sidebar-overlay" hidden></div>
+
+    <dialog class="dialog" id="join-dialog" aria-labelledby="join-title">
+      <form id="join-form" novalidate>
+        <div class="dialog-header">
+          <h2 id="join-title">Join a channel</h2>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog="join-dialog"
+            aria-label="Close join dialog"
+          >
+            ×
+          </button>
+        </div>
+        <div class="dialog-body">
+          <label class="field">
+            <span>Channel</span>
+            <input
+              id="join-channel"
+              name="channel"
+              type="text"
+              maxlength="64"
+              autocomplete="off"
+              placeholder="#exirc"
+              required
+            />
+          </label>
+          <p class="form-error" id="join-error" role="alert" hidden></p>
+          <p class="muted-note">
+            Channels start with #. This only adds a simulated tab in the mock.
+          </p>
+        </div>
+        <div class="dialog-actions">
+          <button class="button button-ghost" type="button" data-close-dialog="join-dialog">
+            Cancel
+          </button>
+          <button class="button button-primary" type="submit">Join</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="dialog" id="shortcuts-dialog" aria-labelledby="shortcuts-title">
+      <div class="dialog-header">
+        <h2 id="shortcuts-title">Keyboard shortcuts</h2>
+        <button
+          class="icon-button"
+          type="button"
+          data-close-dialog="shortcuts-dialog"
+          aria-label="Close keyboard shortcuts"
+        >
+          ×
+        </button>
+      </div>
+      <div class="dialog-body">
+        <dl class="shortcut-list">
+          <dt><kbd>Alt</kbd> + <kbd>1…9</kbd></dt>
+          <dd>Jump directly to a visible tab.</dd>
+          <dt><kbd>Alt</kbd> + <kbd>←</kbd>/<kbd>→</kbd></dt>
+          <dd>Cycle through open conversations.</dd>
+          <dt><kbd>Tab</kbd></dt>
+          <dd>Complete the nickname at the cursor in the composer.</dd>
+          <dt><kbd>Enter</kbd></dt>
+          <dd>Send. <kbd>Shift</kbd> + <kbd>Enter</kbd> inserts a new line.</dd>
+          <dt><kbd>/me</kbd>, <kbd>/msg</kbd>, <kbd>/join</kbd></dt>
+          <dd>Simulated local commands: action, private message, join.</dd>
+          <dt><kbd>/clear</kbd>, <kbd>/help</kbd></dt>
+          <dd>Clear the active log or open this dialog.</dd>
+          <dt><kbd>Esc</kbd></dt>
+          <dd>Close the mobile drawer or an open dialog.</dd>
+        </dl>
+        <p class="panel-note" style="margin-top: 14px">
+          No shortcut opens a network connection. This page only changes local mock state.
+        </p>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
