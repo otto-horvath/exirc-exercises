@@ -5,6 +5,7 @@
 # Elixir IRC Client Exercises
 
 [![Built with Elixir](https://img.shields.io/badge/Built%20with-Elixir-8847B9)](https://elixir-lang.org/)
+[![CI](https://github.com/otto-horvath/exirc-exercises/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/otto-horvath/exirc-exercises/actions/workflows/ci.yml)
 
 A test-first learning series for building an IRC client in Elixir. The client
 starts as a terminal application and grows into a Phoenix LiveView interface,
@@ -95,7 +96,7 @@ Dependencies and frameworks are added only when a milestone needs them.
 | 1 | IRC message framing and parser | solved | CRLF framing, TCP stream buffering, tags/prefixes/parameters, pure functions, ExUnit |
 | 2 | TCP connection and registration | solved | sockets, framing state, registration flow, server numerics, timeouts, local fake server |
 | 2.5 | Refactoring and API hardening (session) | solved | test-first refactors, send-error propagation, input validation, public/private API |
-| 3 | IRC session behavior | | `PING`/`PONG`, incoming events, explicit state, process messaging |
+| 3 | IRC session behavior | solved | `PING`/`PONG`, incoming events, explicit state, process messaging |
 | 4 | Terminal channels and chat | | `LIST`, channel browsing, `JOIN`/`PART`, `PRIVMSG`, private chats |
 | 5 | Client lifecycle and resilience | | supervision, multiple network connections, disconnects and reconnect policy |
 | 5.5 | TLS transport (optional) | | `:ssl` connections, certificate verification, a local TLS fake server |
@@ -109,7 +110,9 @@ for the initial client. Broadway is out of scope.
 See the [Exercise 1 guide](docs/exercise-1-irc-message-framing-and-parser.md)
 for the framing and parser concepts, decisions, and test progression, and the
 [Exercise 2 guide](docs/exercise-2-tcp-connection-and-registration.md) for the
-connection, registration, and fake-server work.
+connection, registration, and fake-server work. See the
+[Exercise 3 guide](docs/exercise-3-irc-session-behavior.md) for session
+processes, active socket input, message dispatch, and PING/PONG handling.
 
 ## Protocol references and integration targets
 
@@ -168,6 +171,7 @@ with Erlang/OTP 29.1.1, managed with asdf. Run `bash scripts/setup.sh`; see
 - [IRC protocol and compatibility notes](docs/irc-protocol-notes.md)
 - [Exercise 1 — IRC message framing and parser](docs/exercise-1-irc-message-framing-and-parser.md)
 - [Exercise 2 — TCP connection and registration](docs/exercise-2-tcp-connection-and-registration.md)
+- [Exercise 3 — IRC session behavior](docs/exercise-3-irc-session-behavior.md)
 - [Session 2.5 — Refactoring, API hardening, and the red-green-refactor cycle](docs/session-2.5-refactoring-and-api-hardening.md)
 - [Notes for next session](docs/notes-for-next-session.md)
 - Future exercise guides and optional session notes will live under `docs/`.
